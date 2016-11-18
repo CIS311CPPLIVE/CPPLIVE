@@ -90,67 +90,43 @@
 
         <div class="row">
             <div class="box">
-					<div class="col-md-10">
-				    <div id="fb-root"></div>
+					<div class="col-md-12">
+					<div id="fb-root"></div>
 					<button id="login">Login</button></br>
 					<h3>ARTICLE SUBMISSION</h3>
-					
-								<!--</br>
-								<div class="radio col-md-2">
-								  <label><input type="radio" name="optradio">Culture</label>
-								</div>
-								<div class="radio col-md-2">
-									<label><input type="radio" name="optradio">Food</label>
-								</div>
-								<div class="radio col-md-2">
-									 <label><input type="radio" name="optradio" disabled>Nightlife</label>
-								</div>
-								<div class="radio col-md-2">
-								  <label><input type="radio" name="optradio">Outdoors</label>
-								</div>
-								<div class="radio col-md-2">
-									<label><input type="radio" name="optradio">Seasonal</label>
-								</div>
-								<div class="radio col-md-2">
-									 <label><input type="radio" name="optradio" disabled>Shopping</label>
-								</div>
-								</br> -->
-							<div class="col-md-5">
+							<section class="col-md-4">
 								<div class="radio">
-								  <label><input type="radio" name="optradio">Culture</label>
+								  <label><input id="cultureRad" type="radio" name="optradio">Culture</label>
 								</div>
 								<div class="radio">
-									<label><input type="radio" name="optradio">Food</label>
+									<label><input id="foodRad" type="radio" name="optradio">Food</label>
 								</div>
 								<div class="radio">
-									 <label><input type="radio" name="optradio">Nightlife</label>
+									 <label><input id="nightRad" type="radio" name="optradio">Nightlife</label>
 								</div>
+							</section>
+							<section class="col-md-4">
+								<div class="radio">
+								  <label><input id="outdoorRad" type="radio" name="optradio">Outdoors</label>
+								</div>
+								<div class="radio">
+									<label><input id="seasonalRad" type="radio" name="optradio">Seasonal</label>
+								</div>
+								<div class="radio">
+									 <label><input id="shoppingRad" type="radio" name="optradio">Shopping</label>
+								</div>
+							</section>
+							<div class="col-md-12">			
+							Title:
+							<input id="title" type="text" class="form-control">
+							Publish Date:
+							<input id="articleDate" type="text" class="form-control">
+							Author:
+							<input id="author" type="text" class="form-control"><br />
+							Article Text:
+							<textarea id="articleText" class="form-control" rows="10" placeholder="Text here!" onfocus="this.placeholder = ' '" onblur ="this.placeholder = 'Text here!'"></textarea>
+							<button id="submitButton">Submit</button>
 							</div>
-							<div class="col-md-5">
-								<div class="radio">
-								  <label><input type="radio" name="optradio">Outdoors</label>
-								</div>
-								<div class="radio">
-									<label><input type="radio" name="optradio">Seasonal</label>
-								</div>
-								<div class="radio">
-									 <label><input type="radio" name="optradio">Shopping</label>
-								</div>
-							</div></br>
-					<div>			
-					</br>Title:</br>
-					<input id="title" type="text" /><br />
-					Publish Date:</br>
-					<input id="articleDate" type="text" /><br />
-					Author:</br>
-					<input id="author" type="text" /><br />
-					Article Text:</br>
-					<textarea id="articleText" cols="100" rows="10">
-						This is where the user can enter text. If there's too much text, the textbox can develop scrollbars to accommodate the extra text...
-					</textarea></br>
-						
-					<button id="putThis">Put!</button> | <button id="getThis">Get!</button> | <button id="updateThis">Update!</button> | <button id="deleteThis">Delete!</button>
-					</div>
 					</div>
             </div>
         </div>
@@ -180,14 +156,14 @@
         var params;
         var keyText;
         var attText;
-        var valText;
+        var categorySelect;
         var dynamodb = null;
         var docClient = null;
-        var appId = '1793150234234453'; //from facebook
-        var roleArn = 'arn:aws:iam::233812421297:role/cis311-role-mivargas'; //from AWS IAM
+        var appId = '1793150234234453'; //from facebook  !!NEEDS TO BE CHANGED!!
+        var roleArn = 'arn:aws:iam::233812421297:role/cis311-role-mivargas'; //from AWS IAM  !NEEDS TO BE CHANGED!
         var resultData = null;
 
-	document.getElementById('putThis').onclick = function () {
+	document.getElementById('submitButton').onclick = function () {
 		dynamodb = new AWS.DynamoDB({ region: 'us-west-2' });
 		docClient = new AWS.DynamoDB.DocumentClient({ service: dynamodb });
 		keyText = document.getElementById("keyValue").value;
@@ -197,7 +173,7 @@
 		console.log("Attribute: ", attText);
 		console.log("Value: ", valText);
 		params = {
-			TableName: 'cis311-dynamoDB-table-mivargas',
+			TableName: 'cpp-live-db',
 			Item: {
 				itemID: keyText,
 				attribute1: valText
@@ -214,75 +190,6 @@
 		})
 
 
-	};
-
-	document.getElementById('getThis').onclick = function () {
-		dynamodb = new AWS.DynamoDB({ region: 'us-west-2' });
-		docClient = new AWS.DynamoDB.DocumentClient({ service: dynamodb });
-		keyText = document.getElementById("keyValue").value;
-		attText = document.getElementById("attributeText").value;
-		console.log("Key Value: ", keyText);
-		console.log("Attribute: ", attText);
-		params = {
-			TableName: 'cis311-dynamoDB-table-mivargas',
-			Key: {
-				itemID: keyText
-			},
-			ProjectionExpression: "#a",
-			ExpressionAttributeNames: {
-				'#a': attText
-			}
-		};
-		docClient.get(params, function (err, data) {
-			if (err) console.log(err, err.stack);
-			else console.log(data);
-		})
-	};
-
-	document.getElementById('updateThis').onclick = function () {
-		dynamodb = new AWS.DynamoDB({ region: 'us-west-2' });
-		docClient = new AWS.DynamoDB.DocumentClient({ service: dynamodb });
-		keyText = document.getElementById("keyValue").value;
-		attText = document.getElementById("attributeText").value;
-		valText = document.getElementById("valueText").value;
-		console.log("Key Value: ", keyText);
-		console.log("Attribute: ", attText);
-		console.log("Value: ", valText);
-		params = {
-			TableName: 'cis311-dynamoDB-table-mivargas',
-			Key: {
-				itemID: keyText
-			},
-			ExpressionAttributeNames: {
-				'#a': attText
-			},
-			ExpressionAttributeValues: {
-				':v': valText
-			},
-			UpdateExpression: 'set #a = :v',
-		};
-
-		docClient.update(params, function (err, data) {
-			if (err) console.log(err);
-			else console.log(data);
-		})
-	};
-
-	document.getElementById('deleteThis').onclick = function () {
-		dynamodb = new AWS.DynamoDB({ region: 'us-west-2' });
-		docClient = new AWS.DynamoDB.DocumentClient({ service: dynamodb });
-		keyText = document.getElementById("keyValue").value;
-		console.log("Key Value: ", keyText);
-		params = {
-			TableName: 'cis311-dynamoDB-table-mivargas',
-			Key: {
-				itemID: keyText
-			}
-		};
-		docClient.delete(params, function(err, data){
-		if(err) console.log(err);
-		else console.log(data);
-		});
 	};
 
 	window.fbAsyncInit = function () {
@@ -315,5 +222,4 @@
 	}
 	</script>
 </body>
-
 </html>
