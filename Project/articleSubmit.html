@@ -157,16 +157,17 @@
         var categorySelect;
         var dynamodb = null;
         var docClient = null;
-        var appId = '1793150234234453'; //from facebook  !!NEEDS TO BE CHANGED!!
-        var roleArn = 'arn:aws:iam::233812421297:role/cis311-role-mivargas'; //from AWS IAM  !NEEDS TO BE CHANGED!
+        var appId = '1346223748721746'; //from facebook  !!HAS BEEN UPDATE!!
+        var roleArn = 'arn:aws:iam::233812421297:role/cppLiveUploader'; //from AWS IAM  !NEEDS TO BE CHANGED!
         var resultData = null;
 
 	document.getElementById('submitButton').onclick = function () {
 		dynamodb = new AWS.DynamoDB({ region: 'us-west-2' });
 		docClient = new AWS.DynamoDB.DocumentClient({ service: dynamodb });
-		keyText = document.getElementById("keyValue").value;
-		attText = document.getElementById("attributeText").value;
-		valText = document.getElementById("valueText").value;
+		titleText = document.getElementById("title").value;
+		dateText = document.getElementById("articleDate").value;
+		authorText = document.getElementById("author").value;
+		articleText = document.getElementById("articleText").value;
 		
 		if (document.getElementById('cultureRad').checked){
 			categoryText = "culture";
@@ -187,14 +188,18 @@
 			categoryText = "shopping";
 		}
 		
-		console.log("Key Value: ", keyText);
-		console.log("Attribute: ", attText);
-		console.log("Value: ", valText);
+		console.log("Title: ", titleText);
+		console.log("Author: ", authorText);
+		console.log("Date: ", dateText);
 		params = {
 			TableName: 'cpp-live-db',
 			Item: {
-				itemID: keyText,
-				attribute1: valText
+				title: titleText,
+				author: authorText,
+				category: categoryText,
+				date: dateText,
+				content: articleText
+				
 			}
 		};
 		docClient.put(params, function(err, data){
