@@ -12,6 +12,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script id="facebook-jssdk" src="https://connect.facebook.net/en_US/all.js"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.2.18.min.js"></script>
     
 
     <title>Article Submission Page</title>
@@ -118,11 +119,11 @@
 							</div>
 							<div class="col-md-12">			
 							Title:
-							<input id="title" type="text" class="form-control">
+							<input id="titleValue" type="text" class="form-control">
 							Publish Date:
-							<input id="articleDate" type="text" class="form-control">
+							<input id="dateValue" type="text" class="form-control">
 							Author:
-							<input id="author" type="text" class="form-control"><br />
+							<input id="authorValue" type="text" class="form-control"><br />
 							Article Text:
 							<textarea id="articleText" class="form-control" rows="10" placeholder="Text here!" onfocus="this.placeholder = ' '" onblur ="this.placeholder = 'Text here!'"></textarea>
 							<button id="submitButton">Submit</button>
@@ -158,15 +159,15 @@
         var dynamodb = null;
         var docClient = null;
         var appId = '1346223748721746'; //from facebook  !!HAS BEEN UPDATE!!
-        var roleArn = 'arn:aws:iam::233812421297:role/cppLiveUploader'; //from AWS IAM  !NEEDS TO BE CHANGED!
+        var roleArn = 'arn:aws:iam::233812421297:role/cppLiveUploader'; //from AWS IAM  !!UPDATED!!
         var resultData = null;
 
 	document.getElementById('submitButton').onclick = function () {
 		dynamodb = new AWS.DynamoDB({ region: 'us-west-2' });
 		docClient = new AWS.DynamoDB.DocumentClient({ service: dynamodb });
-		titleText = document.getElementById("title").value;
-		dateText = document.getElementById("articleDate").value;
-		authorText = document.getElementById("author").value;
+		titleText = document.getElementById("titleValue").value;
+		dateText = document.getElementById("dateValue").value;
+		authorText = document.getElementById("authorValue").value;
 		articleText = document.getElementById("articleText").value;
 		
 		if (document.getElementById('cultureRad').checked){
@@ -191,6 +192,7 @@
 		console.log("Title: ", titleText);
 		console.log("Author: ", authorText);
 		console.log("Date: ", dateText);
+		console.log("Category: ", categoryText);
 		params = {
 			TableName: 'cpp-live-db',
 			Item: {
